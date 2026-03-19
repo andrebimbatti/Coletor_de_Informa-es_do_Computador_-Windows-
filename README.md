@@ -123,6 +123,35 @@ O script usa:
   - Execução remota
 
 ---
+## 🌐 Uso em Rede (GPO / Active Directory)
+
+Por padrão, os relatórios são salvos localmente na máquina.
+
+Para uso em ambiente corporativo com GPO, recomenda-se salvar os arquivos em um servidor de rede.
+
+### 🔧 Alteração necessária
+
+No arquivo `coletar_dados.ps1`, altere:
+
+```powershell
+$pasta = "Relatorios"
+Para um caminho de rede:
+$pasta = "\\SERVIDOR\Inventario\Relatorios"
+
+📁 Resultado
+
+Cada computador irá gerar seu próprio arquivo no servidor:
+\\SERVIDOR\Inventario\Relatorios\PC01.txt
+\\SERVIDOR\Inventario\Relatorios\PC02.txt
+
+⚠️ Permissões
+
+Certifique-se de que os computadores do domínio possuem permissão de escrita na pasta de rede.
+
+Exemplo:
+
+Domínio\Computadores → Permissão de escrita
+
 
 ## 🛠️ Possíveis Melhorias
 
