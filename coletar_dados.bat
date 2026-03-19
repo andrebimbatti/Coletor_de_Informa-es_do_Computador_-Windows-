@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy Bypass -File "%~dp0coletar_dados.ps1"
