@@ -1,5 +1,9 @@
 # DESENVOLVIDO POR ANDRE BIMBATTI https://github.com/andrebimbatti
 
+# ===== PROGRESSO INICIAL =====
+Write-Output "STATUS:Iniciando"
+Write-Output "PROGRESS:5"
+
 # ================= DEFINIR PASTA (PENDRIVE) =================
 $Pasta = Join-Path $PSScriptRoot "Relatorios"
 
@@ -14,6 +18,10 @@ $usuario = $env:USERNAME
 $dominio = $env:USERDOMAIN
 $data = Get-Date
 
+# ===== PROGRESSO =====
+Write-Output "STATUS:Coletando sistema"
+Write-Output "PROGRESS:15"
+
 # ================= SISTEMA =================
 $os = Get-CimInstance Win32_OperatingSystem
 $cpu = Get-CimInstance Win32_Processor
@@ -23,9 +31,21 @@ $ramTotalGB = [math]::Round($cs.TotalPhysicalMemory / 1GB,2)
 $discos = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3"
 $gpu = Get-CimInstance Win32_VideoController
 
+Write-Output "Computador: $pc  |  Usuario: $usuario  |  Dominio: $dominio"
+
+# ===== PROGRESSO =====
+Write-Output "STATUS:Coletando fabricante"
+Write-Output "PROGRESS:30"
+
 # ================= FABRICANTE =================
 $fabricante = $cs.Manufacturer
 $modelo = $cs.Model
+
+Write-Output "Fabricante: $fabricante  |  Modelo: $modelo"
+
+# ===== PROGRESSO =====
+Write-Output "STATUS:Identificando equipamento"
+Write-Output "PROGRESS:40"
 
 # ================= TIPO EQUIPAMENTO =================
 $tipoChassi = (Get-CimInstance Win32_SystemEnclosure).ChassisTypes
@@ -35,18 +55,24 @@ if ($tipoChassi -contains 8 -or $tipoChassi -contains 9 -or $tipoChassi -contain
     $tipoEquipamento = "Desktop"
 }
 
+Write-Output "Tipo de equipamento: $tipoEquipamento"
+Write-Output "Sistema: $($os.Caption)  |  Build: $($os.BuildNumber)"
+Write-Output "Processador: $($cpu.Name)  ($($cpu.NumberOfCores) nucleos)"
+
+# ===== PROGRESSO =====
+Write-Output "STATUS:Coletando memoria"
+Write-Output "PROGRESS:55"
+
 # ================= MEMORIA RAM =================
 $memorias = Get-CimInstance Win32_PhysicalMemory
 $tiposMemoria = @()
 $frequencias = @()
 
 foreach ($mem in $memorias) {
-
     $tipo = $mem.SMBIOSMemoryType
     if (-not $tipo -or $tipo -eq 0) {
         $tipo = $mem.MemoryType
     }
-
     switch ($tipo) {
         20 { $tiposMemoria += "DDR" }
         21 { $tiposMemoria += "DDR2" }
@@ -55,7 +81,6 @@ foreach ($mem in $memorias) {
         34 { $tiposMemoria += "DDR5" }
         default { $tiposMemoria += "Nao identificado pela BIOS" }
     }
-
     if ($mem.Speed) {
         $frequencias += "$($mem.Speed) MHz"
     }
@@ -64,6 +89,12 @@ foreach ($mem in $memorias) {
 $tipoRAM = ($tiposMemoria | Select-Object -Unique) -join ", "
 $freqRAM = ($frequencias | Select-Object -Unique) -join ", "
 $quantidadePentes = $memorias.Count
+
+Write-Output "Memoria RAM: $ramTotalGB GB  |  Tipo: $tipoRAM  |  Freq: $freqRAM  |  Pentes: $quantidadePentes"
+
+# ===== PROGRESSO =====
+Write-Output "STATUS:Verificando ativacao"
+Write-Output "PROGRESS:70"
 
 # ================= ATIVACAO WINDOWS =================
 $licenca = Get-CimInstance SoftwareLicensingProduct |
@@ -74,6 +105,30 @@ if ($licenca.LicenseStatus -eq 1) {
 } else {
     $statusAtivacao = "Nao Ativado"
 }
+
+Write-Output "Ativacao Windows: $statusAtivacao"
+
+# ===== DISCOS =====
+Write-Output "STATUS:Verificando discos"
+Write-Output "PROGRESS:78"
+
+foreach ($d in $discos) {
+    $total = [math]::Round($d.Size/1GB,2)
+    $livre = [math]::Round($d.FreeSpace/1GB,2)
+    Write-Output "Disco $($d.DeviceID)  Total: $total GB  |  Livre: $livre GB"
+}
+
+# ===== GPU =====
+Write-Output "STATUS:Verificando GPU"
+Write-Output "PROGRESS:82"
+
+foreach ($g in $gpu) {
+    Write-Output "Placa de video: $($g.Name)"
+}
+
+# ===== PROGRESSO =====
+Write-Output "STATUS:Gerando relatorio"
+Write-Output "PROGRESS:85"
 
 # ================= GERAR RELATORIO =================
 "==============================================" | Out-File $Arquivo -Encoding UTF8
@@ -127,3 +182,8 @@ foreach ($g in $gpu) {
 "" | Add-Content $Arquivo
 "==============================================" | Add-Content $Arquivo
 "FIM DO RELATORIO" | Add-Content $Arquivo
+
+# ===== FINAL =====
+Write-Output "Relatorio salvo em: $Arquivo"
+Write-Output "STATUS:Finalizado"
+Write-Output "PROGRESS:100"
