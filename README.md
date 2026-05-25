@@ -118,7 +118,7 @@ O script usa:
 - Funciona apenas em **Windows**
 - Não envia dados para internet (100% local)
 - Pode ser usado em massa via:
-  - GPO
+  - PSTools
   - Script de logon
   - Execução remota
 
@@ -157,7 +157,7 @@ Domínio\Computadores → Permissão de escrita
 
 - Exportar para CSV ou Excel
 - Envio automático para servidor
-- Interface gráfica (GUI)
+- Interface gráfica (GUI) ✔️ 24/05/2026
 - Coleta de rede (IP, MAC, etc.)
 - Integração com Active Directory
 
