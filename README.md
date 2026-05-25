@@ -157,7 +157,7 @@ Domínio\Computadores → Permissão de escrita
 
 - Exportar para CSV ou Excel
 - Envio automático para servidor
-- Interface gráfica (GUI) ✔️ 24/05/2026
+- Interface gráfica (GUI) ✔️ adicionado 24/05/2026
 - Coleta de rede (IP, MAC, etc.)
 - Integração com Active Directory
 
